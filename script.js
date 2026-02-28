@@ -24,44 +24,36 @@ function drawRoute() {
         map.removeLayer(routeLine);
     }
 
-    var source = [17.385044, 78.486671];
-    var destination = [17.395044, 78.496671];
+    let sourceInput = document.getElementById("sourceInput").value;
+    let destinationInput = document.getElementById("destinationInput").value;
 
-    var hour = new Date().getHours();
-    var risk = 0;
+    if (!sourceInput || !destinationInput) {
+        alert("Please enter source and destination as lat,lng");
+        return;
+    }
 
+    let source = sourceInput.split(',').map(Number);
+    let destination = destinationInput.split(',').map(Number);
+
+    let hour = new Date().getHours();
+    let risk = 0;
+
+    // Night risk
     if (hour >= 19 || hour <= 5) {
         risk += 5;
     }
 
-    risk += 10;
+    // Check if near unsafe zone
+    let distanceToUnsafe = map.distance(source, [17.390044, 78.490671]);
 
-    document.getElementById("riskValue").innerText = risk;
-
-    var riskBox = document.getElementById("riskBox");
-    var status = document.getElementById("riskStatus");
-
-    var routeColor = "green";
-    var routeWeight = 4;
-
-    if (risk <= 5) {
-        riskBox.style.backgroundColor = "lightgreen";
-        status.innerText = "Status: Safe";
-        routeColor = "green";
-        routeWeight = 4;
+    if (distanceToUnsafe < 600) {
+        risk += 10;
     }
-    else if (risk <= 10) {
-        riskBox.style.backgroundColor = "yellow";
-        status.innerText = "Status: Medium Risk";
-        routeColor = "orange";
-        routeWeight = 6;
-    }
-    else {
-        riskBox.style.backgroundColor = "red";
-        status.innerText = "Status: High Risk";
-        routeColor = "red";
-        routeWeight = 8;
-    }
+
+    updateRiskUI(risk);
+
+    let routeColor = getRouteColor(risk);
+    let routeWeight = risk > 10 ? 8 : 5;
 
     routeLine = L.polyline([source, destination], {
         color: routeColor,
@@ -71,7 +63,44 @@ function drawRoute() {
 
     map.fitBounds(routeLine.getBounds());
 }
+function updateRiskUI(risk) {
 
+    document.getElementById("riskValue").innerText = risk;
+
+    let status = document.getElementById("riskStatus");
+    let circle = document.querySelector(".circle");
+
+    let degree = (risk / 15) * 360;
+
+    if (risk <= 5) {
+        status.innerText = "Status: Safe";
+        circle.style.background = `conic-gradient(green ${degree}deg, #eee ${degree}deg)`;
+    }
+    else if (risk <= 10) {
+        status.innerText = "Status: Medium Risk";
+        circle.style.background = `conic-gradient(orange ${degree}deg, #eee ${degree}deg)`;
+    }
+    else {
+        status.innerText = "Status: High Risk";
+        circle.style.background = `conic-gradient(red ${degree}deg, #eee ${degree}deg)`;
+    }
+}
+
+function getRouteColor(risk) {
+    if (risk <= 5) return "green";
+    if (risk <= 10) return "orange";
+    return "red";
+}
+navigator.geolocation.getCurrentPosition(function(position) {
+    let userLatLng = [position.coords.latitude, position.coords.longitude];
+
+    L.marker(userLatLng)
+        .addTo(map)
+        .bindPopup("You are here")
+        .openPopup();
+
+    map.setView(userLatLng, 14);
+});
 // Ensure intro disappears fully
 setTimeout(function() {
     var intro = document.getElementById("introScreen");
