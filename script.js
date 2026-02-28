@@ -79,3 +79,33 @@ setTimeout(function() {
         intro.style.display = "none";
     }
 }, 4000);
+function triggerSOS() {
+
+    if (navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(function(position) {
+
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+
+            var userLocation = [lat, lng];
+
+            var sosMarker = L.circleMarker(userLocation, {
+                radius: 10,
+                color: 'red',
+                fillColor: 'red',
+                fillOpacity: 1
+            }).addTo(map);
+
+            sosMarker.bindPopup("🚨 SOS Triggered! Help is on the way.").openPopup();
+
+            map.setView(userLocation, 15);
+
+            alert("Emergency Alert Sent to Trusted Contacts!");
+
+        });
+
+    } else {
+        alert("Geolocation not supported");
+    }
+}
