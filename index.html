@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SafePath - Women Safety Route Planner</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Intro Screen -->
+<div id="introScreen">
+    <h1>🚺 SafePath</h1>
+    <p>Smart Route Planning for Women's Safety</p>
+</div>
+
+<h2>Women Safety Smart Route Planner</h2>
+
+<div class="controls">
+    <button onclick="drawRoute()">Find Safe Route</button>
+</div>
+
+<div id="riskBox">
+    <h3>Safety Score: <span id="riskValue">0</span></h3>
+    <p id="riskStatus">Status: Safe</p>
+</div>
+
+<div id="legend">
+    <p><span style="color:green;">●</span> Safe</p>
+    <p><span style="color:orange;">●</span> Medium Risk</p>
+    <p><span style="color:red;">●</span> High Risk</p>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
