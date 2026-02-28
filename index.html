@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>SafePath - Women Safety Route Planner</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,29 +17,75 @@
 <div id="introScreen">
     <h1>🚺 SafePath</h1>
     <p>Smart Route Planning for Women's Safety</p>
+    <div class="intro-sub">Secure. Elegant. Premium.</div>
 </div>
 
-<h2>Women Safety Smart Route Planner</h2>
+<header class="site-header">
+    <div class="brand">
+        <div class="logo">🚺</div>
+        <div>
+            <h1>SafePath</h1>
+            <p class="tag">Women Safety Route Planner</p>
+        </div>
+    </div>
+    <nav class="top-actions">
+        <button onclick="drawRoute()" class="ghost">Quick Demo</button>
+        <button id="topSOS" onclick="triggerSOS()" class="danger small sosPulse">SOS</button>
+    </nav>
+</header>
 
-<div class="controls">
-    <button onclick="drawRoute()">Find Safe Route</button>
-    <button onclick="triggerSOS()" style="background:red;">SOS</button>
+<main class="layout">
+    <aside class="panel" aria-labelledby="panelTitle">
+        <div class="panel-head">
+            <h2 id="panelTitle">Find a Safe Route</h2>
+            <div class="badge premium">Premium</div>
+        </div>
 
+        <div class="form">
+            <label class="visually-hidden" for="fromInput">From</label>
+            <input id="fromInput" type="text" placeholder="FROM: Enter starting location..." aria-label="From">
 
+            <label class="visually-hidden" for="toInput">To</label>
+            <input id="toInput" type="text" placeholder="TO: Enter destination..." aria-label="To">
+
+            <div class="btn-row">
+                <button id="findBtn" onclick="findRoute()" class="primary">Find Route</button>
+                <button onclick="triggerSOS()" class="danger">SOS</button>
+            </div>
+        </div>
+
+        <div id="riskBox" class="info-card risk-card">
+            <h3>Safety Score: <span id="riskValue">0</span></h3>
+            <p id="riskStatus">Status: Safe</p>
+        </div>
+
+        <div id="legend" class="info-card small">
+            <p><span class="dot safe"></span> Safe</p>
+            <p><span class="dot medium"></span> Medium Risk</p>
+            <p><span class="dot high"></span> High Risk</p>
+        </div>
+
+        <footer class="panel-foot">
+            <small>Tip: enter coordinates like <em>17.385044,78.486671</em> or a full address.</small>
+        </footer>
+    </aside>
+
+    <section class="map-area">
+        <div id="map"></div>
+    </section>
+</main>
+
+<!-- Toast container (for notifications) -->
+<div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Loading overlay used during route calculation -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="shimmer-card">
+        <div class="shimmer-line title"></div>
+        <div class="shimmer-line short"></div>
+    </div>
+    <div class="loading-text">Calculating safest route…</div>
 </div>
-
-<div id="riskBox">
-    <h3>Safety Score: <span id="riskValue">0</span></h3>
-    <p id="riskStatus">Status: Safe</p>
-</div>
-
-<div id="legend">
-    <p><span style="color:green;">●</span> Safe</p>
-    <p><span style="color:orange;">●</span> Medium Risk</p>
-    <p><span style="color:red;">●</span> High Risk</p>
-</div>
-
-<div id="map"></div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="script.js"></script>
